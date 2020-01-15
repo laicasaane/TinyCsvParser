@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Linq;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace TinyCsvParser.Tokenizer
 {
@@ -55,7 +55,8 @@ namespace TinyCsvParser.Tokenizer
                 throw new ArgumentNullException(nameof(columns));
             }
 
-            Columns = columns.ToArray();
+            Columns = new ColumnDefinition[columns.Count];
+            columns.CopyTo(Columns, 0);
             Trim = trim;
         }
 
@@ -76,9 +77,18 @@ namespace TinyCsvParser.Tokenizer
 
         public override string ToString()
         {
-            var columnDefinitionsString = string.Join(", ", Columns.Select(x => x.ToString()));
+            var stringBuilder = new StringBuilder();
+            var last = Columns.Length - 1;
 
-            return $"FixedLengthTokenizer (Columns = [{columnDefinitionsString}], Trim = {Trim})";
+            for (var i = 0; i < Columns.Length; i++)
+            {
+                stringBuilder.Append(Columns[i].ToString());
+
+                if (i < last)
+                    stringBuilder.Append(", ");
+            }
+
+            return $"FixedLengthTokenizer (Columns = [{stringBuilder.ToString()}], Trim = {Trim})";
         }
     }
 }

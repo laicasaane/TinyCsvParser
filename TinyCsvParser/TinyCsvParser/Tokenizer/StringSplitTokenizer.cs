@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Linq;
+using System.Collections.Generic;
 
 namespace TinyCsvParser.Tokenizer
 {
@@ -18,15 +18,21 @@ namespace TinyCsvParser.Tokenizer
 
         public string[] Tokenize(string input)
         {
-            if(TrimValues) 
+            var tokenized_input = input.Split(FieldsSeparator);
+
+            if (TrimValues)
             {
-                return input
-                    .Split(FieldsSeparator)
-                    .Select(x => x.Trim())
-                    .ToArray();
+                var tokenized_output = new List<string>();
+
+                foreach (var token in tokenized_input)
+                {
+                    tokenized_output.Add(token.Trim());
+                }
+
+                return tokenized_output.ToArray();
             }
 
-            return input.Split(FieldsSeparator);
+            return tokenized_input;
         }
 
         public override string ToString()

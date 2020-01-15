@@ -9,7 +9,7 @@ namespace TinyCsvParser
     public class CsvParserOptions
     {
         public readonly ITokenizer Tokenizer;
-        
+
         public readonly bool SkipHeader;
 
         public readonly string CommentCharacter;

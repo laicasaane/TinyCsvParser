@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 using TinyCsvParser.TypeConverter;
 using TinyCsvParser.Model;
 using TinyCsvParser.Ranges;
@@ -86,7 +86,9 @@ namespace TinyCsvParser.Mapping
 
         protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Action<TEntity, TProperty> propertySetter, ITypeConverter<TProperty> typeConverter, string propertyName = null)
         {
-            if (csvIndexPropertyMappings.Any(x => x.ColumnIndex == columnIndex))
+            var index = csvIndexPropertyMappings.FindIndex(x => x.ColumnIndex == columnIndex);
+
+            if (index >= 0)
             {
                 throw new InvalidOperationException($"Duplicate mapping for column index {columnIndex}");
             }
@@ -119,7 +121,9 @@ namespace TinyCsvParser.Mapping
 
         protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, ITypeConverter<TProperty> typeConverter, string propertyName = null)
         {
-            if (csvIndexPropertyMappings.Any(x => x.ColumnIndex == columnIndex))
+            var index = csvIndexPropertyMappings.FindIndex(x => x.ColumnIndex == columnIndex);
+
+            if (index >= 0)
             {
                 throw new InvalidOperationException($"Duplicate mapping for column index {columnIndex}");
             }
@@ -203,9 +207,14 @@ namespace TinyCsvParser.Mapping
                 var range = rangeToPropertyMapping.Range;
 
                 // Copy the Sub Array. This needs optimization, like ReadOnlyMemory!
-                var slice = values.Tokens.Skip(range.Start).Take(range.Length).ToArray();
+                var slice = new List<string>();
 
-                if (!rangeToPropertyMapping.PropertyMapping.TryMapValue(entity, slice))
+                for (var i = range.Start; i < range.Length && i < values.Tokens.Length; i++)
+                {
+                    slice.Add(values.Tokens[i]);
+                }
+
+                if (!rangeToPropertyMapping.PropertyMapping.TryMapValue(entity, slice.ToArray()))
                 {
                     var columnIndex = range.Start;
 
@@ -251,9 +260,18 @@ namespace TinyCsvParser.Mapping
 
         public override string ToString()
         {
-            var csvPropertyMappingsString =  string.Join(", ", csvIndexPropertyMappings.Select(x => x.ToString()));
+            var stringBuilder = new StringBuilder();
+            var last = csvIndexPropertyMappings.Count - 1;
 
-            return $"CsvMapping (TypeConverterProvider = {typeConverterProvider}, Mappings = {csvPropertyMappingsString})";
+            for (var i = 0; i < csvIndexPropertyMappings.Count; i++)
+            {
+                stringBuilder.Append(csvIndexPropertyMappings[i].ToString());
+
+                if (i < last)
+                    stringBuilder.Append(", ");
+            }
+
+            return $"CsvMapping (TypeConverterProvider = {typeConverterProvider}, Mappings = {stringBuilder.ToString()})";
         }
     }
 }
