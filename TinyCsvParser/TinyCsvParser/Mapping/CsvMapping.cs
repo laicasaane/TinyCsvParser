@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using TinyCsvParser.TypeConverter;
 using TinyCsvParser.Model;
 using TinyCsvParser.Ranges;
@@ -37,7 +36,7 @@ namespace TinyCsvParser.Mapping
                 return $"IndexToPropertyMapping (Range = {Range}, PropertyMapping = {PropertyMapping}";
             }
         }
-        
+
 
         private readonly ITypeConverterProvider typeConverterProvider;
         private readonly List<IndexToPropertyMapping> csvIndexPropertyMappings;
@@ -66,40 +65,72 @@ namespace TinyCsvParser.Mapping
             return rowMapping;
         }
 
-        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Expression<Func<TEntity, TProperty>> property)
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Action<TEntity, TProperty> propertySetter, string propertyName = null)
         {
-            return MapProperty(columnIndex, property, typeConverterProvider.Resolve<TProperty>());
+            return MapProperty(columnIndex, propertySetter, typeConverterProvider.Resolve<TProperty>(), propertyName);
         }
 
-        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Expression<Func<TEntity, TProperty>> property)
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Action<TEntity, TProperty> propertySetter, string propertyName = null)
         {
-            return MapProperty(range, property, typeConverterProvider.ResolveCollection<TProperty>());
+            return MapProperty(range, propertySetter, typeConverterProvider.ResolveCollection<TProperty>(), propertyName);
         }
 
-        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Expression<Func<TEntity, TProperty>> property, IArrayTypeConverter<TProperty> typeConverter)
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Action<TEntity, TProperty> propertySetter, IArrayTypeConverter<TProperty> typeConverter, string propertyName = null)
         {
-            var propertyMapping = new CsvCollectionPropertyMapping<TEntity, TProperty>(property, typeConverter);
+            var propertyMapping = new CsvCollectionPropertyMapping<TEntity, TProperty>(null, propertySetter, typeConverter, propertyName);
 
             AddPropertyMapping(range, propertyMapping);
 
             return propertyMapping;
         }
 
-        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Expression<Func<TEntity, TProperty>> property, ITypeConverter<TProperty> typeConverter)
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Action<TEntity, TProperty> propertySetter, ITypeConverter<TProperty> typeConverter, string propertyName = null)
         {
             if (csvIndexPropertyMappings.Any(x => x.ColumnIndex == columnIndex))
             {
                 throw new InvalidOperationException($"Duplicate mapping for column index {columnIndex}");
             }
 
-            var propertyMapping = new CsvPropertyMapping<TEntity, TProperty>(property, typeConverter);
+            var propertyMapping = new CsvPropertyMapping<TEntity, TProperty>(null, propertySetter, typeConverter, propertyName);
 
            AddPropertyMapping(columnIndex, propertyMapping);
 
             return propertyMapping;
         }
 
-        
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, string propertyName = null)
+        {
+            return MapProperty(columnIndex, propertyGetter, propertySetter, typeConverterProvider.Resolve<TProperty>(), propertyName);
+        }
+
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, string propertyName = null)
+        {
+            return MapProperty(range, propertyGetter, propertySetter, typeConverterProvider.ResolveCollection<TProperty>(), propertyName);
+        }
+
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, IArrayTypeConverter<TProperty> typeConverter, string propertyName = null)
+        {
+            var propertyMapping = new CsvCollectionPropertyMapping<TEntity, TProperty>(propertyGetter, propertySetter, typeConverter, propertyName);
+
+            AddPropertyMapping(range, propertyMapping);
+
+            return propertyMapping;
+        }
+
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, ITypeConverter<TProperty> typeConverter, string propertyName = null)
+        {
+            if (csvIndexPropertyMappings.Any(x => x.ColumnIndex == columnIndex))
+            {
+                throw new InvalidOperationException($"Duplicate mapping for column index {columnIndex}");
+            }
+
+            var propertyMapping = new CsvPropertyMapping<TEntity, TProperty>(propertyGetter, propertySetter, typeConverter, propertyName);
+
+            AddPropertyMapping(columnIndex, propertyMapping);
+
+            return propertyMapping;
+        }
+
         private void AddPropertyMapping<TProperty>(int columnIndex, CsvPropertyMapping<TEntity, TProperty> propertyMapping)
         {
             var indexToPropertyMapping = new IndexToPropertyMapping
@@ -191,7 +222,7 @@ namespace TinyCsvParser.Mapping
                 }
             }
 
-            // Iterate over Row Mappings. At this point previous values for the entity 
+            // Iterate over Row Mappings. At this point previous values for the entity
             // should be set:
             for(int pos = 0; pos < csvRowMappings.Count; pos++)
             {
@@ -217,7 +248,7 @@ namespace TinyCsvParser.Mapping
                 Result = entity
             };
         }
-        
+
         public override string ToString()
         {
             var csvPropertyMappingsString =  string.Join(", ", csvIndexPropertyMappings.Select(x => x.ToString()));

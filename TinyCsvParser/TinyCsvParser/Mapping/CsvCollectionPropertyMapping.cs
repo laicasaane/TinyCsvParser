@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
-using TinyCsvParser.Reflection;
 using TinyCsvParser.TypeConverter;
 
 namespace TinyCsvParser.Mapping
@@ -11,12 +9,14 @@ namespace TinyCsvParser.Mapping
         private readonly string propertyName;
         private readonly IArrayTypeConverter<TProperty> propertyConverter;
         private readonly Action<TEntity, TProperty> propertySetter;
+        private readonly Func<TEntity, TProperty> propertyGetter;
 
-        public CsvCollectionPropertyMapping(Expression<Func<TEntity, TProperty>> property, IArrayTypeConverter<TProperty> typeConverter)
+        public CsvCollectionPropertyMapping(Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, IArrayTypeConverter<TProperty> typeConverter, string propertyName = null)
         {
-            propertyConverter = typeConverter;
-            propertyName = ReflectionUtils.GetPropertyNameFromExpression(property);
-            propertySetter = ReflectionUtils.CreateSetter<TEntity, TProperty>(property);
+            this.propertyGetter = propertyGetter;
+            this.propertySetter = propertySetter;
+            this.propertyConverter = typeConverter;
+            this.propertyName = string.IsNullOrEmpty(propertyName) ? string.Empty : propertyName;
         }
 
         public bool TryMapValue(TEntity entity, string[] value)

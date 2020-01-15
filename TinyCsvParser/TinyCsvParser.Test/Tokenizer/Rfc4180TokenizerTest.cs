@@ -26,9 +26,9 @@ namespace TinyCsvParser.Test.Tokenizer
         {
             public SampleEntityMapping()
             {
-                MapProperty(0, x => x.Name);
-                MapProperty(1, x => x.Age);
-                MapProperty(2, x => x.Description);
+                MapProperty(0, x => x.Name, (x, v) => x.Name = v);
+                MapProperty(1, x => x.Age, (x, v) => x.Age = v);
+                MapProperty(2, x => x.Description, (x, v) => x.Description = v);
             }
         }
 
@@ -51,7 +51,7 @@ namespace TinyCsvParser.Test.Tokenizer
                 .AppendLine("Name, Age, Description")
                 .AppendLine("\"Michael, Chester\",24,\"Also goes by \"\"Mike\"\", among friends that is\"")
                 .AppendLine("\"Robert, Willliamson\", , \"All-around nice guy who always says hi\"");
-            
+
             // Define the NewLine Character to split at:
             CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
 

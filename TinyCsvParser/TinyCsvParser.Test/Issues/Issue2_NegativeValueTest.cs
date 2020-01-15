@@ -22,7 +22,7 @@ namespace TinyCsvParser.Test.Issues
         {
             public NegativeValueEntityMapping()
             {
-                MapProperty(0, x => x.Value);
+                MapProperty(0, x => x.Value, (x, v) => x.Value = v);
             }
         }
 
@@ -43,7 +43,7 @@ namespace TinyCsvParser.Test.Issues
                 .ToList();
 
             Assert.AreEqual(1, result.Count);
-            
+
             Assert.IsTrue(result.All(x => x.IsValid));
 
             Assert.AreEqual(-1, result.First().Result.Value);

@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq.Expressions;
-using TinyCsvParser.Reflection;
 using TinyCsvParser.TypeConverter;
 
 namespace TinyCsvParser.Mapping
@@ -14,15 +12,17 @@ namespace TinyCsvParser.Mapping
         private readonly string propertyName;
         private readonly ITypeConverter<TProperty> propertyConverter;
         private readonly Action<TEntity, TProperty> propertySetter;
+        private readonly Func<TEntity, TProperty> propertyGetter;
 
-        public CsvPropertyMapping(Expression<Func<TEntity, TProperty>> property, ITypeConverter<TProperty> typeConverter) 
+        public CsvPropertyMapping(Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, ITypeConverter<TProperty> typeConverter, string propertyName = null)
         {
-            propertyConverter = typeConverter;
-            propertyName = ReflectionUtils.GetPropertyNameFromExpression(property);
-            propertySetter = ReflectionUtils.CreateSetter<TEntity, TProperty>(property);
+            this.propertyGetter = propertyGetter;
+            this.propertySetter = propertySetter;
+            this.propertyConverter = typeConverter;
+            this.propertyName = string.IsNullOrEmpty(propertyName) ? string.Empty : propertyName;
         }
 
-        public bool TryMapValue(TEntity entity, string value) 
+        public bool TryMapValue(TEntity entity, string value)
         {
             if (!propertyConverter.TryConvert(value, out var convertedValue))
             {
@@ -33,7 +33,7 @@ namespace TinyCsvParser.Mapping
 
             return true;
         }
-        
+
         public override string ToString()
         {
             return $"CsvPropertyMapping (PropertyName = {propertyName}, Converter = {propertyConverter})";

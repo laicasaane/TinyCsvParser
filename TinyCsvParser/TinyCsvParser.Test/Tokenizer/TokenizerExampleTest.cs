@@ -23,8 +23,8 @@ namespace TinyCsvParser.Test.Tokenizer
         {
             public CsvPersonMapping()
             {
-                MapProperty(0, x => x.FirstNameWithLastName);
-                MapProperty(1, x => x.BirthDate);
+                MapProperty(0, x => x.FirstNameWithLastName, (x, v) => x.FirstNameWithLastName = v);
+                MapProperty(1, x => x.BirthDate, (x, v) => x.BirthDate = v);
             }
         }
 

@@ -33,7 +33,7 @@ namespace TinyCsvParser.Test.CsvParser
         {
             public CsvMainClassMapping()
             {
-                MapProperty(0, x => x.Property1);
+                MapProperty(0, x => x.Property1, (x, v) => x.Property1 = v);
                 MapUsing((entity, values) =>
                 {
                     var subClass = new SubClass();
@@ -67,7 +67,7 @@ namespace TinyCsvParser.Test.CsvParser
             Assert.IsTrue(result.All(x => x.IsValid));
 
             Assert.AreEqual("A", result[0].Result.Property1);
-            
+
             Assert.IsNotNull(result[0].Result.SubClass);
 
             Assert.AreEqual("B", result[0].Result.SubClass.Property2);

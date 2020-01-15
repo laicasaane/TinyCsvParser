@@ -30,8 +30,8 @@ namespace TinyCsvParser.Test.CsvParser
         {
             public CsvVehicleMapping()
             {
-                MapProperty(0, x => x.VehicleType, new EnumConverter<VehicleTypeEnum>(true));
-                MapProperty(1, x => x.Name);
+                MapProperty(0, x => x.VehicleType, (x, v) => x.VehicleType = v, new EnumConverter<VehicleTypeEnum>(true));
+                MapProperty(1, x => x.Name, (x, v) => x.Name = v);
             }
         }
 

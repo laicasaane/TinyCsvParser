@@ -24,9 +24,9 @@ namespace TinyCsvParser.Test.CsvParser
         {
             public CsvPersonMapping()
             {
-                MapProperty(0, x => x.FirstName);
-                MapProperty(1, x => x.LastName);
-                MapProperty(2, x => x.BirthDate);
+                MapProperty(0, x => x.FirstName, (x, v) => x.FirstName = v);
+                MapProperty(1, x => x.LastName, (x, v) => x.LastName = v);
+                MapProperty(2, x => x.BirthDate, (x, v) => x.BirthDate = v);
             }
         }
 
@@ -39,9 +39,9 @@ namespace TinyCsvParser.Test.CsvParser
             public CsvPersonMappingWithTypeConverterProvider(ITypeConverterProvider typeConverterProvider)
                 : base(typeConverterProvider)
             {
-                MapProperty(0, x => x.FirstName);
-                MapProperty(1, x => x.LastName);
-                MapProperty(2, x => x.BirthDate);
+                MapProperty(0, x => x.FirstName, (x, v) => x.FirstName = v);
+                MapProperty(1, x => x.LastName, (x, v) => x.LastName = v);
+                MapProperty(2, x => x.BirthDate, (x, v) => x.BirthDate = v);
             }
         }
 
@@ -49,9 +49,9 @@ namespace TinyCsvParser.Test.CsvParser
         {
             public CsvPersonMappingWithCustomConverter()
             {
-                MapProperty(0, x => x.FirstName);
-                MapProperty(1, x => x.LastName);
-                MapProperty(2, x => x.BirthDate, new DateTimeConverter("yyyy###MM###dd"));
+                MapProperty(0, x => x.FirstName, (x, v) => x.FirstName = v);
+                MapProperty(1, x => x.LastName, (x, v) => x.LastName = v);
+                MapProperty(2, x => x.BirthDate, (x, v) => x.BirthDate = v, new DateTimeConverter("yyyy###MM###dd"));
             }
         }
 

@@ -24,9 +24,9 @@ namespace TinyCsvParser.Test.CsvParser
         {
             public CsvPersonMapping()
             {
-                MapProperty(0, x => x.FirstName);
-                MapProperty(1, x => x.LastName);
-                MapProperty(2, x => x.BirthDate);
+                MapProperty(0, x => x.FirstName, (x, v) => x.FirstName = v);
+                MapProperty(1, x => x.LastName, (x, v) => x.LastName = v);
+                MapProperty(2, x => x.BirthDate, (x, v) => x.BirthDate = v);
             }
         }
 
@@ -54,7 +54,7 @@ namespace TinyCsvParser.Test.CsvParser
                 .AppendLine("Max;Mustermann;2014/01/01");
 #if NETCOREAPP1_1
             var basePath = AppContext.BaseDirectory;
-#else 
+#else
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
 #endif
             var filePath = Path.Combine(basePath, "test_file.txt");
@@ -106,7 +106,7 @@ namespace TinyCsvParser.Test.CsvParser
                 .AppendLine("Max;Mustermann;2014/01/01");
 #if NETCOREAPP1_1
             var basePath = AppContext.BaseDirectory;
-#else 
+#else
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
 #endif
             var filePath = Path.Combine(basePath, "test_file.txt");

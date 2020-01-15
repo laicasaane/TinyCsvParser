@@ -24,9 +24,9 @@ namespace TinyCsvParser.Test.CsvParser
         {
             public CsvPersonMapping()
             {
-                MapProperty(0, x => x.FirstName);
-                MapProperty(1, x => x.LastName);
-                MapProperty(2, x => x.BirthDate);
+                MapProperty(0, x => x.FirstName, (x, v) => x.FirstName = v);
+                MapProperty(1, x => x.LastName, (x, v) => x.LastName = v);
+                MapProperty(2, x => x.BirthDate, (x, v) => x.BirthDate = v);
             }
         }
 
@@ -52,7 +52,7 @@ namespace TinyCsvParser.Test.CsvParser
             CsvPersonMapping csvMapper = new CsvPersonMapping();
             CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
 
-            // Make sure the ToString() doesn't throw... 
+            // Make sure the ToString() doesn't throw...
             Assert.DoesNotThrow(() => csvParser.ToString());
 
             // TODO Check ToString Output

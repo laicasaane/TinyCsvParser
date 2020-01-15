@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using TinyCsvParser.Exceptions;
-using TinyCsvParser.Reflection;
 
 namespace TinyCsvParser.TypeConverter
 {
@@ -122,7 +121,7 @@ namespace TinyCsvParser.TypeConverter
         public IArrayTypeConverter<TTargetType> ResolveCollection<TTargetType>()
         {
             Type targetType = typeof(TTargetType);
-            
+
             if (!typeConverters.TryGetValue(targetType, out var typeConverter))
             {
                 throw new CsvTypeConverterNotRegisteredException($"No TypeConverter registered for Type {targetType}");

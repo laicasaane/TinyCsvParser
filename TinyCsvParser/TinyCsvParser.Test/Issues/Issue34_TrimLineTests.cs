@@ -30,9 +30,9 @@ namespace TinyCsvParser.Test.Issues
         {
             public TestEntityMapping()
             {
-                MapProperty(0, x => x.Column1);
-                MapProperty(1, x => x.Column2);
-                MapProperty(2, x => x.Column3);
+                MapProperty(0, x => x.Column1, (x, v) => x.Column1 = v);
+                MapProperty(1, x => x.Column2, (x, v) => x.Column2 = v);
+                MapProperty(2, x => x.Column3, (x, v) => x.Column3 = v);
             }
         }
 

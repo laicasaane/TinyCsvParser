@@ -22,11 +22,11 @@ namespace TinyCsvParser.Test.Mapping
         {
             public DuplicateMapping()
             {
-                MapProperty(0, x => x.PropertyInt);
-                MapProperty(0, x => x.PropertyInt);
+                MapProperty(0, x => x.PropertyInt, (x, v) => x.PropertyInt = v);
+                MapProperty(0, x => x.PropertyInt, (x, v) => x.PropertyInt = v);
             }
         }
-        
+
         [Test]
         public void DuplicateMappingTest()
         {
@@ -37,7 +37,7 @@ namespace TinyCsvParser.Test.Mapping
         {
             public WrongColumnMapping()
             {
-                MapProperty(2, x => x.PropertyInt);
+                MapProperty(2, x => x.PropertyInt, (x, v) => x.PropertyInt = v);
             }
         }
 
@@ -57,10 +57,10 @@ namespace TinyCsvParser.Test.Mapping
         {
             public CorrectColumnMapping()
             {
-                MapProperty(0, x => x.PropertyInt);
+                MapProperty(0, x => x.PropertyInt, (x, v) => x.PropertyInt = v);
             }
         }
-        
+
 
         [Test]
         public void MapEntity_ConversionError_Test()
@@ -90,19 +90,5 @@ namespace TinyCsvParser.Test.Mapping
 
             Assert.DoesNotThrow(() => result.ToString());
         }
-
-		private class GetOnlyIntColumnMapping : CsvMapping<SampleEntity>
-		{
-			public GetOnlyIntColumnMapping()
-			{
-				MapProperty(0, x => x.GetOnlyPropertyInt);
-			}
-		}
-
-		[Test]
-		public void MapEntity_GetOnlyError_Test()
-		{
-			Assert.Throws<InvalidOperationException>(() => new GetOnlyIntColumnMapping());
-		}
 	}
 }

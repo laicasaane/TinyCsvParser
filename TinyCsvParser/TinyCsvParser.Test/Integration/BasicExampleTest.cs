@@ -23,9 +23,9 @@ namespace TinyCsvParser.Test.Integration
         {
             public CsvPersonMapping()
             {
-                MapProperty(0, x => x.FirstName);
-                MapProperty(1, x => x.LastName);
-                MapProperty(2, x => x.BirthDate);
+                MapProperty(0, x => x.FirstName, (x, v) => x.FirstName = v);
+                MapProperty(1, x => x.LastName, (x, v) => x.LastName = v);
+                MapProperty(2, x => x.BirthDate, (x, v) => x.BirthDate = v);
             }
         }
 

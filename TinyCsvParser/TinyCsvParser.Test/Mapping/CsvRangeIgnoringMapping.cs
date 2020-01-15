@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using NUnit.Framework;
 using TinyCsvParser.Mapping;
@@ -42,19 +41,38 @@ namespace TinyCsvParser.Test.Mapping
             this.csvIndexPropertyMappings = new List<IndexToPropertyMapping>();
         }
 
-        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Expression<Func<TEntity, TProperty>> property)
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Action<TEntity, TProperty> propertySetter, string propertyName = null)
         {
-            return MapProperty(columnIndex, property, typeConverterProvider.Resolve<TProperty>());
+            return MapProperty(columnIndex, propertySetter, typeConverterProvider.Resolve<TProperty>(), propertyName);
         }
 
-        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Expression<Func<TEntity, TProperty>> property, ITypeConverter<TProperty> typeConverter)
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Action<TEntity, TProperty> propertySetter, ITypeConverter<TProperty> typeConverter, string propertyName = null)
         {
             if (csvIndexPropertyMappings.Any(x => x.ColumnIndex == columnIndex))
             {
                 throw new InvalidOperationException($"Duplicate mapping for column index {columnIndex}");
             }
 
-            var propertyMapping = new CsvPropertyMapping<TEntity, TProperty>(property, typeConverter);
+            var propertyMapping = new CsvPropertyMapping<TEntity, TProperty>(null, propertySetter, typeConverter, propertyName);
+
+            AddPropertyMapping(columnIndex, propertyMapping);
+
+            return propertyMapping;
+        }
+
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, string propertyName = null)
+        {
+            return MapProperty(columnIndex, propertyGetter, propertySetter, typeConverterProvider.Resolve<TProperty>(), propertyName);
+        }
+
+        protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, ITypeConverter<TProperty> typeConverter, string propertyName = null)
+        {
+            if (csvIndexPropertyMappings.Any(x => x.ColumnIndex == columnIndex))
+            {
+                throw new InvalidOperationException($"Duplicate mapping for column index {columnIndex}");
+            }
+
+            var propertyMapping = new CsvPropertyMapping<TEntity, TProperty>(propertyGetter, propertySetter, typeConverter, propertyName);
 
             AddPropertyMapping(columnIndex, propertyMapping);
 
@@ -136,9 +154,9 @@ namespace TinyCsvParser.Test.Mapping
         {
             public PermissiveSampleEntityMapper()
             {
-                MapProperty(0, x => x.Value1);
-                MapProperty(1, x => x.Value2);
-                MapProperty(2, x => x.Value3);
+                MapProperty(0, x => x.Value1, (x, v) => x.Value1 = v);
+                MapProperty(1, x => x.Value2, (x, v) => x.Value2 = v);
+                MapProperty(2, x => x.Value3, (x, v) => x.Value3 = v);
             }
         }
 

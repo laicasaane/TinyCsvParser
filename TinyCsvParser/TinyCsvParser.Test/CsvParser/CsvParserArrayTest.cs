@@ -24,8 +24,8 @@ namespace TinyCsvParser.Test.CsvParser
         {
             public CsvMeasurementMapping()
             {
-                MapProperty(0, x => x.Id);
-                MapProperty(new RangeDefinition(1, 2), x => x.Values);
+                MapProperty(0, x => x.Id, (x, v) => x.Id = v);
+                MapProperty(new RangeDefinition(1, 2), x => x.Values, (x, v) => x.Values = v);
             }
         }
 

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using TinyCsvParser.Reflection;
 
 namespace TinyCsvParser.TypeConverter
 {
@@ -26,7 +25,7 @@ namespace TinyCsvParser.TypeConverter
         {
             result = false;
 
-            if(string.Equals(trueValue, value, stringComparism)) 
+            if(string.Equals(trueValue, value, stringComparism))
             {
                 result = true;
 
