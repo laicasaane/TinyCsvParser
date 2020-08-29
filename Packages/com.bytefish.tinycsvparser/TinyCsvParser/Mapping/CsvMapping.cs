@@ -70,12 +70,12 @@ namespace TinyCsvParser.Mapping
             return MapProperty(columnIndex, propertySetter, typeConverterProvider.Resolve<TProperty>(), propertyName);
         }
 
-        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Action<TEntity, TProperty> propertySetter, string propertyName = null)
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(in RangeDefinition range, Action<TEntity, TProperty> propertySetter, string propertyName = null)
         {
             return MapProperty(range, propertySetter, typeConverterProvider.ResolveCollection<TProperty>(), propertyName);
         }
 
-        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Action<TEntity, TProperty> propertySetter, IArrayTypeConverter<TProperty> typeConverter, string propertyName = null)
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(in RangeDefinition range, Action<TEntity, TProperty> propertySetter, IArrayTypeConverter<TProperty> typeConverter, string propertyName = null)
         {
             var propertyMapping = new CsvCollectionPropertyMapping<TEntity, TProperty>(null, propertySetter, typeConverter, propertyName);
 
@@ -103,12 +103,12 @@ namespace TinyCsvParser.Mapping
             return MapProperty(columnIndex, propertyGetter, propertySetter, typeConverterProvider.Resolve<TProperty>(), propertyName);
         }
 
-        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, string propertyName = null)
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(in RangeDefinition range, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, string propertyName = null)
         {
             return MapProperty(range, propertyGetter, propertySetter, typeConverterProvider.ResolveCollection<TProperty>(), propertyName);
         }
 
-        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(RangeDefinition range, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, IArrayTypeConverter<TProperty> typeConverter, string propertyName = null)
+        protected CsvCollectionPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(in RangeDefinition range, Func<TEntity, TProperty> propertyGetter, Action<TEntity, TProperty> propertySetter, IArrayTypeConverter<TProperty> typeConverter, string propertyName = null)
         {
             var propertyMapping = new CsvCollectionPropertyMapping<TEntity, TProperty>(propertyGetter, propertySetter, typeConverter, propertyName);
 
@@ -141,7 +141,7 @@ namespace TinyCsvParser.Mapping
             csvIndexPropertyMappings.Add(indexToPropertyMapping);
         }
 
-        private void AddPropertyMapping<TProperty>(RangeDefinition range, CsvCollectionPropertyMapping<TEntity, TProperty> propertyMapping)
+        private void AddPropertyMapping<TProperty>(in RangeDefinition range, CsvCollectionPropertyMapping<TEntity, TProperty> propertyMapping)
         {
             var rangeToPropertyMapping = new RangeToPropertyMapping {
                 Range = range,

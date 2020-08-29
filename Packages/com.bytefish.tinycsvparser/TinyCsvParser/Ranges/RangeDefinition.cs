@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace TinyCsvParser.Ranges
+﻿namespace TinyCsvParser.Ranges
 {
-    public class RangeDefinition
+    public readonly struct RangeDefinition
     {
         /// <summary>Represent the inclusive start index of the Range.</summary>
         public int Start { get; }
@@ -22,9 +20,7 @@ namespace TinyCsvParser.Ranges
             Length = end - start + 1;
         }
 
-        public Tuple<int, int> GetOffsetAndLength(int length)
-        {
-            return Tuple.Create(Start, End - Start);
-        }
+        public static implicit operator RangeDefinition(in (int start, int end) value)
+            => new RangeDefinition(value.start, value.end);
     }
 }
