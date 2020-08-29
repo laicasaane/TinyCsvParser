@@ -16,6 +16,9 @@ namespace TinyCsvParser
 
         public readonly string CommentCharacter;
 
+        /// <summary>
+        /// The degree of parallelism to use in a query. The value must be from 1 to 512 (inclusive).
+        /// </summary>
         public readonly int DegreeOfParallelism;
 
         public readonly bool KeepOrder;
@@ -71,7 +74,7 @@ namespace TinyCsvParser
             SkipEmptyRow = skipEmptyRow;
             CommentCharacter = commentCharacter;
             Tokenizer = tokenizer;
-            DegreeOfParallelism = degreeOfParallelism;
+            DegreeOfParallelism = Math.Min(Math.Max(1, degreeOfParallelism), 512);
             KeepOrder = keepOrder;
         }
 
