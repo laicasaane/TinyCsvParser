@@ -41,7 +41,7 @@ namespace TinyCsvParser
                 .WithDegreeOfParallelism(options.DegreeOfParallelism)
                 .Where(row => !string.IsNullOrWhiteSpace(row.Data));
 
-            // Ignore Lines, that start with a comment character:
+            // Ignore lines that start with a comment character:
             if (!string.IsNullOrWhiteSpace(options.CommentCharacter))
             {
                 query = query.Where(line => !line.Data.StartsWith(options.CommentCharacter));
