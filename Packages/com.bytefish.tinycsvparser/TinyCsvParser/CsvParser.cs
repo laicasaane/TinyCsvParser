@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TinyCsvParser.Mapping;
 using TinyCsvParser.Model;
 
@@ -19,53 +20,36 @@ namespace TinyCsvParser
             this.mapping = mapping;
         }
 
-        public IEnumerable<CsvMappingResult<TEntity>> Parse(IEnumerable<Row> csvData)
+        public ParallelQuery<CsvMappingResult<TEntity>> Parse(IEnumerable<Row> csvData)
         {
             if (csvData == null)
             {
                 throw new ArgumentNullException(nameof(csvData));
             }
 
-            var rows = new List<Row>(csvData);
-
-            if (options.SkipHeader)
-                rows.RemoveAt(0);
+            var query = csvData
+                .Skip(options.SkipHeader ? 1 : 0)
+                .AsParallel();
 
             // If you want to get the same order as in the CSV file, this option needs to be set:
             if (options.KeepOrder)
-                rows.Sort(new Row.Comparer());
-
-            for (var i = rows.Count - 1; i >= 0; i--)
             {
-                if (string.IsNullOrWhiteSpace(rows[i].Data))
-                    rows.RemoveAt(i);
+                query = query.AsOrdered();
             }
+
+            query = query
+                .WithDegreeOfParallelism(options.DegreeOfParallelism)
+                .Where(row => !string.IsNullOrWhiteSpace(row.Data));
 
             // Ignore Lines, that start with a comment character:
             if (!string.IsNullOrWhiteSpace(options.CommentCharacter))
             {
-                for (var i = rows.Count - 1; i >= 0; i--)
-                {
-                    if (rows[i].Data.StartsWith(options.CommentCharacter))
-                        rows.RemoveAt(i);
-                }
+                query = query.Where(line => !line.Data.StartsWith(options.CommentCharacter));
             }
 
-            var tokenizedRows = new List<TokenizedRow>();
-
-            foreach (var row in rows)
-            {
-                tokenizedRows.Add(new TokenizedRow(row.Index, options.Tokenizer.Tokenize(row.Data)));
-            }
-
-            var csvMappingResults = new List<CsvMappingResult<TEntity>>();
-
-            foreach (var row in tokenizedRows)
-            {
-                csvMappingResults.Add(mapping.Map(row));
-            }
-
-            return csvMappingResults;
+            return query
+                .Select(line => new TokenizedRow(line.Index, options.Tokenizer.Tokenize(line.Data)))
+                .Select(fields => mapping.Map(fields));
         }
 
         public override string ToString()

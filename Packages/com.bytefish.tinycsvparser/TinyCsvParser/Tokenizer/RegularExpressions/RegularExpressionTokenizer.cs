@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace TinyCsvParser.Tokenizer.RegularExpressions
@@ -12,15 +12,10 @@ namespace TinyCsvParser.Tokenizer.RegularExpressions
 
         public string[] Tokenize(string input)
         {
-            var matches = Regexp.Matches(input);
-            var tokenized_output = new List<string>(matches.Count);
-
-            foreach (Match match in matches)
-            {
-                tokenized_output.Add(match.Value);
-            }
-
-            return tokenized_output.ToArray();
+            return Regexp.Matches(input)
+                .Cast<Match>()
+                .Select(x => x.Value)
+                .ToArray();
         }
 
         public override string ToString()

@@ -33,7 +33,7 @@ namespace TinyCsvParser.Tokenizer.RFC4180
             }
         }
 
-        private Options options;
+        private readonly Options options;
 
         public Reader(Options options)
         {
@@ -107,7 +107,7 @@ namespace TinyCsvParser.Tokenizer.RFC4180
                         return new Token(TokenType.EndOfRecord, result);
                     }
 
-                    if(IsDelimiter(reader.Peek()))
+                    if (IsDelimiter(reader.Peek()))
                     {
                         reader.Read();
                     }
@@ -150,7 +150,8 @@ namespace TinyCsvParser.Tokenizer.RFC4180
             }
         }
 
-        private bool IsQuoteCharacter(int c) {
+        private bool IsQuoteCharacter(int c)
+        {
             return c == options.QuoteCharacter;
         }
 

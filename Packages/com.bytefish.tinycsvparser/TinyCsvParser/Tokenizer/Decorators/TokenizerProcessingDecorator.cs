@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace TinyCsvParser.Tokenizer.Decorators
 {
@@ -59,14 +59,10 @@ namespace TinyCsvParser.Tokenizer.Decorators
             var preprocessed_input = preprocessor.Processor(input);
 
             var tokenized_input = tokenizer.Tokenize(preprocessed_input);
-            var tokenized_output = new List<string>();
 
-            foreach (var token in tokenized_input)
-            {
-                tokenized_output.Add(postprocessor.Processor(token));
-            }
-
-            return tokenized_output.ToArray();
+            return tokenized_input
+                .Select(token => postprocessor.Processor(token))
+                .ToArray();
         }
 
         public override string ToString()
