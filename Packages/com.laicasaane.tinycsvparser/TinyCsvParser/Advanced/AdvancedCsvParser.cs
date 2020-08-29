@@ -28,7 +28,7 @@ namespace TinyCsvParser.Advanced
                 .Where(CanSelectRow)
                 .AsParallel();
 
-            if (options.KeepOrder)
+            if (options.KeepOrder || options.RowAsColumn)
                 query = query.AsOrdered();
 
             query = query
@@ -52,41 +52,48 @@ namespace TinyCsvParser.Advanced
 
         private ParallelQuery<TokenizedRow> RowAsColumn(ParallelQuery<TokenizedRow> query)
         {
-            var columns = query.ToArray();
+            var rows = query.ToArray();
 
-            if (columns.Length <= 0)
+            if (rows.Length <= 0)
                 return query;
 
-            var rows = new List<TokenizedRow>();
-            var rowTokens = new List<string>();
-            var columnLength = columns[0].Tokens.Length;
+            var columns = new List<TokenizedRow>();
+            var colTokens = new List<string>();
+            var columnLength = rows[0].Tokens.Length;
             var checkComment = !string.IsNullOrWhiteSpace(options.ColumnComment);
 
             for (var i = 0; i < columnLength; i++)
             {
-                rowTokens.Clear();
+                colTokens.Clear();
 
-                for (var k = 0; k < columns.Length; k++)
+                for (var k = 0; k < rows.Length; k++)
                 {
-                    var tokens = columns[k].Tokens;
+                    var index = rows[k].Index;
+                    var tokens = rows[k].Tokens;
 
                     if (i >= tokens.Length)
                     {
-                        rowTokens.Add(string.Empty);
+                        colTokens.Add(string.Empty);
                         continue;
                     }
 
-                    if (k == 0 && checkComment && tokens[i].StartsWith(options.ColumnComment))
+                    if (index == 0 && checkComment && tokens[i].StartsWith(options.ColumnComment))
+                    {
+                        colTokens.Clear();
                         break;
+                    }
 
-                    rowTokens.Add(tokens[i]);
+                    if (!options.RowRange.Contains(k))
+                        continue;
+
+                    colTokens.Add(tokens[i]);
                 }
 
-                if (rowTokens.Count > 0)
-                    rows.Add(new TokenizedRow(i, rowTokens.ToArray()));
+                if (colTokens.Count > 0)
+                    columns.Add(new TokenizedRow(i, colTokens.ToArray()));
             }
 
-            var newQuery = rows
+            var newQuery = columns
                 .Where(CanSelectColumn)
                 .AsParallel();
 
@@ -100,7 +107,7 @@ namespace TinyCsvParser.Advanced
         }
 
         private bool CanSelectRow(Row row)
-            => options.RowRange.Contains(row.Index);
+            => options.RowAsColumn || options.RowRange.Contains(row.Index);
 
         private bool CanSelectRow(TokenizedRow row)
         {
