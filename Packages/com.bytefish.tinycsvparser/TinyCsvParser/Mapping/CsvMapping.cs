@@ -153,10 +153,10 @@ namespace TinyCsvParser.Mapping
 
         public CsvMappingResult<TEntity> Map(TokenizedRow values)
         {
-            TEntity entity = new TEntity();
+            var entity = new TEntity();
 
             // Iterate over Index Mappings:
-            for (int pos = 0; pos < csvIndexPropertyMappings.Count; pos++)
+            for (var pos = 0; pos < csvIndexPropertyMappings.Count; pos++)
             {
                 var indexToPropertyMapping = csvIndexPropertyMappings[pos];
 
@@ -190,7 +190,7 @@ namespace TinyCsvParser.Mapping
             }
 
             // Iterate over Range Mappings:
-            for (int pos = 0; pos < csvRangePropertyMappings.Count; pos++)
+            for (var pos = 0; pos < csvRangePropertyMappings.Count; pos++)
             {
                 var rangeToPropertyMapping = csvRangePropertyMappings[pos];
 
@@ -216,7 +216,7 @@ namespace TinyCsvParser.Mapping
 
             // Iterate over Row Mappings. At this point previous values for the entity
             // should be set:
-            for (int pos = 0; pos < csvRowMappings.Count; pos++)
+            for (var pos = 0; pos < csvRowMappings.Count; pos++)
             {
                 var csvRowMapping = csvRowMappings[pos];
 

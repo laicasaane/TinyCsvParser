@@ -18,7 +18,7 @@ namespace TinyCsvParser.TypeConverter
         {
             result = new TTargetType[values.Length];
 
-            for(int pos = 0; pos < values.Length; pos++)
+            for(var pos = 0; pos < values.Length; pos++)
             {
                 if (!internalConverter.TryConvert(values[pos], out TTargetType element))
                 {

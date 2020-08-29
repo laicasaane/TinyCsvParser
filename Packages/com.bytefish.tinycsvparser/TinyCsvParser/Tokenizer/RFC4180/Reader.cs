@@ -61,9 +61,9 @@ namespace TinyCsvParser.Tokenizer.RFC4180
         {
             Skip(reader);
 
-            string result = string.Empty;
+            var result = string.Empty;
 
-            int c = reader.Peek();
+            var c = reader.Peek();
 
             if (c == options.DelimiterCharacter)
             {
@@ -121,7 +121,7 @@ namespace TinyCsvParser.Tokenizer.RFC4180
         {
             reader.Read();
 
-            string result = reader.ReadTo(options.QuoteCharacter);
+            var result = reader.ReadTo(options.QuoteCharacter);
 
             reader.Read();
 
@@ -130,7 +130,7 @@ namespace TinyCsvParser.Tokenizer.RFC4180
                 return result;
             }
 
-            StringBuilder buffer = new StringBuilder(result);
+            var buffer = new StringBuilder(result);
             do
             {
                 buffer.Append((char)reader.Read());
