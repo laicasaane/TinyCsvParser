@@ -49,7 +49,24 @@ namespace TinyCsvParser
 
             return query
                 .Select(line => new TokenizedRow(line.Index, options.Tokenizer.Tokenize(line.Data)))
+                .Where(Validate)
                 .Select(fields => mapping.Map(fields));
+        }
+
+        private bool Validate(TokenizedRow row)
+        {
+            if (options.SkipEmptyRow)
+            {
+                foreach (var token in row.Tokens)
+                {
+                    if (!string.IsNullOrWhiteSpace(token))
+                        return true;
+                }
+
+                return false;
+            }
+
+            return true;
         }
 
         public override string ToString()

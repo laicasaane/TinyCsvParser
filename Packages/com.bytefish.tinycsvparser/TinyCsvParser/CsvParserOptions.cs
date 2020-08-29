@@ -12,6 +12,8 @@ namespace TinyCsvParser
 
         public readonly bool SkipHeader;
 
+        public readonly bool SkipEmptyRow;
+
         public readonly string CommentCharacter;
 
         public readonly int DegreeOfParallelism;
@@ -23,8 +25,18 @@ namespace TinyCsvParser
         {
         }
 
+        public CsvParserOptions(bool skipHeader, bool skipEmptyRow, char fieldsSeparator)
+            : this(skipHeader, skipEmptyRow, new QuotedStringTokenizer(fieldsSeparator))
+        {
+        }
+
         public CsvParserOptions(bool skipHeader, char fieldsSeparator, int degreeOfParallelism, bool keepOrder)
             : this(skipHeader, string.Empty, new QuotedStringTokenizer(fieldsSeparator), degreeOfParallelism, keepOrder)
+        {
+        }
+
+        public CsvParserOptions(bool skipHeader, bool skipEmptyRow, char fieldsSeparator, int degreeOfParallelism, bool keepOrder)
+            : this(skipHeader, skipEmptyRow, string.Empty, new QuotedStringTokenizer(fieldsSeparator), degreeOfParallelism, keepOrder)
         {
         }
 
@@ -33,14 +45,30 @@ namespace TinyCsvParser
         {
         }
 
+        public CsvParserOptions(bool skipHeader, bool skipEmptyRow, ITokenizer tokenizer)
+            : this(skipHeader, skipEmptyRow, string.Empty, tokenizer)
+        {
+        }
+
         public CsvParserOptions(bool skipHeader, string commentCharacter, ITokenizer tokenizer)
             : this(skipHeader, commentCharacter, tokenizer, Environment.ProcessorCount, true)
         {
         }
 
+        public CsvParserOptions(bool skipHeader, bool skipEmptyRow, string commentCharacter, ITokenizer tokenizer)
+            : this(skipHeader, skipEmptyRow, commentCharacter, tokenizer, Environment.ProcessorCount, true)
+        {
+        }
+
         public CsvParserOptions(bool skipHeader, string commentCharacter, ITokenizer tokenizer, int degreeOfParallelism, bool keepOrder)
+            : this(skipHeader, false, commentCharacter, tokenizer, degreeOfParallelism, keepOrder)
+        {
+        }
+
+        public CsvParserOptions(bool skipHeader, bool skipEmptyRow, string commentCharacter, ITokenizer tokenizer, int degreeOfParallelism, bool keepOrder)
         {
             SkipHeader = skipHeader;
+            SkipEmptyRow = skipEmptyRow;
             CommentCharacter = commentCharacter;
             Tokenizer = tokenizer;
             DegreeOfParallelism = degreeOfParallelism;
@@ -49,7 +77,7 @@ namespace TinyCsvParser
 
         public override string ToString()
         {
-            return $"CsvParserOptions (Tokenizer = {Tokenizer}, SkipHeader = {SkipHeader}, DegreeOfParallelism = {DegreeOfParallelism}, KeepOrder = {KeepOrder}, CommentCharacter = {CommentCharacter})";
+            return $"CsvParserOptions (Tokenizer = {Tokenizer}, SkipHeader = {SkipHeader}, DegreeOfParallelism = {DegreeOfParallelism}, KeepOrder = {KeepOrder}, CommentCharacter = {CommentCharacter}, SkipEmptyRow = {SkipEmptyRow})";
         }
     }
 }
