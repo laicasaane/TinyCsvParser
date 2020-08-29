@@ -3,7 +3,7 @@
   "description": "Easy to use, easy to extend and high-performance library for CSV parsing with .NET",
   "displayName": "TinyCsvParser",
   "license": "MIT",
-  "name": "com.bytefish.tinycsvparser",
+  "name": "com.laicasaane.tinycsvparser",
   "version": "2.5.2",
   "type": "library",
   "dependencies": {}
