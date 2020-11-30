@@ -17,7 +17,7 @@ private class CsvPersonMapping : CsvMapping<Person>
 }
 ```
 
-Or with another `System.Func` parameter as a property setter:
+Or with another `System.Func` parameter as a property getter:
 
 ```csharp
 private class CsvPersonMapping : CsvMapping<Person>
