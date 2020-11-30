@@ -56,6 +56,7 @@ namespace TinyCsvParser.Mapping
             this.csvRowMappings = new List<CsvRowMapping<TEntity>>();
         }
 
+        [Obsolete("Use MapUsing(Func<TEntity, TokenizedRow, bool>) instead.", true)]
         protected CsvRowMapping<TEntity> MapUsing(Action<TEntity, TokenizedRow> action)
         {
             var rowMapping = new CsvRowMapping<TEntity>(action);
@@ -63,6 +64,16 @@ namespace TinyCsvParser.Mapping
             csvRowMappings.Add(rowMapping);
 
             return rowMapping;
+        }
+
+        protected CsvRowMapping<TEntity> MapUsing(Func<TEntity, TokenizedRow, bool> action)
+        {
+            var rowMapping = new CsvRowMapping<TEntity>(action);
+
+            csvRowMappings.Add(rowMapping);
+
+            return rowMapping;
+
         }
 
         protected CsvPropertyMapping<TEntity, TProperty> MapProperty<TProperty>(int columnIndex, Action<TEntity, TProperty> propertySetter, string propertyName = null)
