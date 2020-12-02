@@ -19,7 +19,7 @@ namespace TinyCsvParser.Mapping
             this.propertyGetter = propertyGetter;
             this.propertySetter = propertySetter;
             this.propertyConverter = typeConverter;
-            this.propertyName = string.IsNullOrEmpty(propertyName) ? string.Empty : propertyName;
+            this.propertyName = propertyName ?? string.Empty;
         }
 
         public bool TryMapValue(TEntity entity, string value)

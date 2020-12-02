@@ -15,7 +15,7 @@ namespace TinyCsvParser.Tokenizer
         public QuotedStringTokenizer(char quoteCharacter, char escapeCharacter, char columnDelimiter)
             : base(new Options(quoteCharacter, escapeCharacter, columnDelimiter))
         {
-        }        
+        }
 
         public override string ToString()
         {

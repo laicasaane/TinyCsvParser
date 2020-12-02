@@ -7,7 +7,7 @@ using TinyCsvParser.Reflection;
 namespace TinyCsvParser.TypeConverter
 {
     public class EnumConverter<TTargetType> : NonNullableConverter<TTargetType>
-        where TTargetType : struct
+        where TTargetType : struct, Enum
     {
         private readonly Type enumType;
         private readonly bool ignoreCase;

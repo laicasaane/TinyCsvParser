@@ -12,7 +12,7 @@ namespace TinyCsvParser.TypeConverter
             : base(new DateTimeConverter())
         {
         }
-        
+
         public NullableDateTimeConverter(string dateTimeFormat)
             : base(new DateTimeConverter(dateTimeFormat))
         {

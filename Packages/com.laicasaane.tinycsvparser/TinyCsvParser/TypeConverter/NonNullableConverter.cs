@@ -18,7 +18,7 @@ namespace TinyCsvParser.TypeConverter
             }
 
             return InternalConvert(value, out result);
-            
+
         }
 
         protected abstract bool InternalConvert(string value, out TTargetType result);
