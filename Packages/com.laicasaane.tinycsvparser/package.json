@@ -4,7 +4,7 @@
   "displayName": "TinyCsvParser",
   "license": "MIT",
   "name": "com.laicasaane.tinycsvparser",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "type": "library",
   "dependencies": {}
 }
