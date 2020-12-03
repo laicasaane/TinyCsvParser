@@ -3,7 +3,7 @@ using TinyCsvParser.TypeConverter;
 
 namespace TinyCsvParser.Mapping
 {
-    public class CsvCollectionPropertyMapping<TEntity, TProperty> : ICsvPropertyMapping<TEntity, string[]>
+    public class CsvCollectionPropertyMapping<TEntity, TProperty> : ICsvPropertyMapping<TEntity, ReadOnlySpan<string>>
         where TEntity : class, new()
     {
         private readonly string propertyName;
@@ -19,7 +19,7 @@ namespace TinyCsvParser.Mapping
             this.propertyName = string.IsNullOrEmpty(propertyName) ? string.Empty : propertyName;
         }
 
-        public bool TryMapValue(TEntity entity, string[] value)
+        public bool TryMapValue(TEntity entity, ReadOnlySpan<string> value)
         {
             if (!propertyConverter.TryConvert(value, out var convertedValue))
             {

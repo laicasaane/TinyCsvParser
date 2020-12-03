@@ -14,7 +14,7 @@ namespace TinyCsvParser.TypeConverter
             this.internalConverter = internalConverter;
         }
 
-        public bool TryConvert(string[] values, out TTargetType[] result)
+        public bool TryConvert(in ReadOnlySpan<string> values, out TTargetType[] result)
         {
             result = new TTargetType[values.Length];
 

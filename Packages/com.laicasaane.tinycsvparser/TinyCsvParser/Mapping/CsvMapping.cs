@@ -29,7 +29,7 @@ namespace TinyCsvParser.Mapping
         {
             public RangeDefinition Range { get; set; }
 
-            public ICsvPropertyMapping<TEntity, string[]> PropertyMapping { get; set; }
+            public ICsvPropertyMapping<TEntity, ReadOnlySpan<string>> PropertyMapping { get; set; }
 
             public override string ToString()
             {
@@ -208,7 +208,7 @@ namespace TinyCsvParser.Mapping
                 var range = rangeToPropertyMapping.Range;
 
                 // Copy the Sub Array. This needs optimization, like ReadOnlyMemory!
-                var slice = values.Tokens.Skip(range.Start).Take(range.Length).ToArray();
+                var slice = values.Tokens.AsReadOnlySpan().Slice(range.Start, range.Length);
 
                 if (!rangeToPropertyMapping.PropertyMapping.TryMapValue(entity, slice))
                 {

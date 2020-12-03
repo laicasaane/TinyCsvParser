@@ -19,7 +19,7 @@ namespace TinyCsvParser.TypeConverter
 
     public interface IArrayTypeConverter<TTargetType> : ITypeConverter
     {
-        bool TryConvert(string[] value, out TTargetType result);
+        bool TryConvert(in ReadOnlySpan<string> value, out TTargetType result);
 
         Type TargetType { get; }
     }
